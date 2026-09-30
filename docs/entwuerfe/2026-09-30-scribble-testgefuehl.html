@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Traumjobfinder – Scribble: Testgefühl</title>
+<style>
+/*
+  Scribble 1 · 30.09.2026 · Stufe 1, grob.
+  Keine Marke, keine Schriftwahl: Hier geht es nur um das Gefühl beim
+  Beantworten. Systemschrift, eine Akzentfarbe.
+
+  Kontraste gerechnet (WCAG 2.2):
+  --tinte   #1C1F24 auf Schirm #FFFFFF 16,52 · auf Grund #F4F2EE 14,78
+  --tinte-2 #545A63 auf Schirm 6,95 · auf Grund 6,22
+  --akzent  #3730A3 auf Schirm 9,93 · auf Grund 8,88 · Weiß darauf 9,93
+  --tinte auf --akzent-hell #E6E4F6 13,21 · --akzent darauf 7,94
+  --rahmen  #7C828B auf Schirm und Grund ≥ 3:1 (Bedienelemente, 1.4.11)
+*/
+:root {
+  color-scheme: light;
+  --grund: #F4F2EE;
+  --schirm: #FFFFFF;
+  --tinte: #1C1F24;
+  --tinte-2: #545A63;
+  --akzent: #3730A3;
+  --akzent-hell: #E6E4F6;
+  --blase: #EEF0F3;
+  --rahmen: #7C828B;
+  --linie: #DDD9D2;
+
+  --schrift: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --text-s: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem);
+  --text-m: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --text-l: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --text-xl: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+
+  --raum-s: clamp(0.5rem, 0.45rem + 0.2vw, 0.625rem);
+  --raum-m: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
+  --raum-l: clamp(1.5rem, 1.2rem + 1.2vw, 2.5rem);
+  --raum-xl: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
+
+  --radius: 0.75rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--grund);
+  color: var(--tinte);
+  font-family: var(--schrift);
+  font-size: var(--text-m);
+  line-height: 1.5;
+}
+
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--akzent); outline-offset: 2px; }
+
+.seite {
+  max-width: 76rem;
+  margin-inline: auto;
+  padding: var(--raum-xl) max(1rem, 4vw) var(--raum-xl);
+}
+
+/* ── Kopf ───────────────────────────────────────────────────────── */
+.kopf { max-width: 42rem; margin-bottom: var(--raum-l); }
+.kicker {
+  margin: 0 0 var(--raum-s);
+  font-size: var(--text-s);
+  color: var(--tinte-2);
+  letter-spacing: 0.02em;
+}
+h1 {
+  margin: 0 0 var(--raum-m);
+  font-size: var(--text-xl);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.kopf p { margin: 0 0 var(--raum-m); }
+
+.anrede {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--raum-s);
+  font-size: var(--text-s);
+  color: var(--tinte-2);
+}
+.anrede-knoepfe {
+  display: inline-flex;
+  border: 1px solid var(--rahmen);
+  border-radius: 999px;
+  padding: 3px;
+  background: var(--schirm);
+}
+.anrede-knoepfe button {
+  min-height: 2.25rem;
+  min-width: 3.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tinte);
+}
+.anrede-knoepfe button[aria-pressed="true"] {
+  background: var(--akzent);
+  color: #FFFFFF;
+}
+
+/* ── Die drei Richtungen ───────────────────────────────────────── */
+.richtungen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--raum-l);
+  align-items: start;
+}
+.richtung h2 { margin: 0 0 0.25rem; font-size: var(--text-l); line-height: 1.25; }
+.richtung .idee {
+  margin: 0 0 var(--raum-m);
+  color: var(--tinte-2);
+  min-height: 3em; /* gleiche Oberkante der Telefone bei ungleich langen Sätzen */
+}
+
+.telefon {
+  background: var(--schirm);
+  border: 1px solid var(--linie);
+  border-radius: 1.75rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 8px 24px rgb(0 0 0 / 0.06);
+  height: 36rem;
+  max-width: 24rem;
+  overflow: hidden;
+  position: relative;
+}
+.schirm {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--raum-m);
+}
+
+.fortschritt {
+  height: 6px;
+  background: var(--blase);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.fortschritt span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--akzent);
+  transition: width 0.25s ease;
+}
+.zaehler { margin: var(--raum-s) 0 0; font-size: var(--text-s); color: var(--tinte-2); }
+.frage-kopf { margin: var(--raum-l) 0 var(--raum-s); color: var(--tinte-2); }
+
+/* A · Fragebogen */
+.taetigkeit {
+  margin: 0 0 var(--raum-l);
+  font-size: var(--text-l);
+  font-weight: 600;
+  line-height: 1.3;
+  min-height: 2.6em;
+}
+.skala { display: grid; gap: var(--raum-s); margin-top: auto; }
+.skala button {
+  min-height: 3rem;
+  border: 1px solid var(--rahmen);
+  border-radius: var(--radius);
+  background: var(--schirm);
+  text-align: left;
+  padding: 0 var(--raum-m);
+}
+.skala button:hover { background: var(--akzent-hell); }
+.zurueck {
+  align-self: flex-start;
+  margin-top: var(--raum-s);
+  min-height: 2.75rem;
+  border: 0;
+  background: none;
+  color: var(--akzent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  padding: 0;
+}
+.zurueck[hidden] { display: none; }
+
+/* B · Karten */
+.stapel {
+  position: relative;
+  flex: 1;
+  margin: var(--raum-s) 0 var(--raum-m);
+  touch-action: pan-y;
+}
+.karte {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--raum-l);
+  background: var(--schirm);
+  border: 1px solid var(--linie);
+  border-radius: 1.25rem;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.08);
+  font-size: var(--text-l);
+  font-weight: 600;
+  line-height: 1.3;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  user-select: none;
+}
+.karte.oben { cursor: grab; }
+.karte.zieht { transition: none; cursor: grabbing; }
+.karte .marke {
+  position: absolute;
+  top: var(--raum-m);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: var(--text-s);
+  font-weight: 600;
+  opacity: 0;
+}
+.karte .marke.ja { right: var(--raum-m); background: var(--akzent); color: #FFFFFF; }
+.karte .marke.nein { left: var(--raum-m); background: var(--tinte); color: #FFFFFF; }
+.karten-knoepfe {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--raum-s);
+}
+.karten-knoepfe button {
+  min-height: 3rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--rahmen);
+  background: var(--schirm);
+  padding: 0 var(--raum-s);
+}
+.karten-knoepfe .ja { background: var(--akzent); border-color: var(--akzent); color: #FFFFFF; }
+.hinweis { margin: var(--raum-s) 0 0; font-size: var(--text-s); color: var(--tinte-2); text-align: center; }
+
+/* C · Gespräch */
+.verlauf {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--raum-s);
+  padding-bottom: var(--raum-s);
+}
+.blase {
+  max-width: 85%;
+  padding: 0.625rem 0.875rem;
+  border-radius: 1rem;
+  line-height: 1.4;
+}
+.blase.neu { animation: auftauchen 0.25s ease; }
+.blase.app { align-self: flex-start; background: var(--blase); border-bottom-left-radius: 0.25rem; }
+.blase.person { align-self: flex-end; background: var(--akzent); color: #FFFFFF; border-bottom-right-radius: 0.25rem; }
+.blase strong { display: block; margin-top: 0.25rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-top: var(--raum-s); border-top: 1px solid var(--linie); }
+.chips button {
+  min-height: 2.75rem;
+  padding: 0 0.875rem;
+  border: 1px solid var(--akzent);
+  border-radius: 999px;
+  background: var(--schirm);
+  color: var(--akzent);
+}
+.chips button:hover { background: var(--akzent-hell); }
+@keyframes auftauchen { from { opacity: 0; transform: translateY(6px); } }
+
+/* Ergebnis, für alle drei gleich */
+.ergebnis { display: flex; flex-direction: column; height: 100%; }
+.ergebnis h3 { margin: var(--raum-s) 0; font-size: var(--text-l); line-height: 1.25; }
+.ergebnis .top { margin: 0 0 var(--raum-m); }
+.balken { list-style: none; margin: 0 0 var(--raum-m); padding: 0; display: grid; gap: 0.375rem; font-size: var(--text-s); }
+.balken li { display: grid; grid-template-columns: 8.5rem 1fr; align-items: center; gap: var(--raum-s); }
+.balken .spur { height: 0.625rem; background: var(--blase); border-radius: 999px; overflow: hidden; }
+.balken .wert { display: block; height: 100%; background: var(--akzent); border-radius: 999px; }
+.ergebnis .klein { font-size: var(--text-s); color: var(--tinte-2); margin: 0 0 var(--raum-m); }
+.ergebnis .nochmal {
+  margin-top: auto;
+  min-height: 3rem;
+  border: 1px solid var(--rahmen);
+  border-radius: var(--radius);
+  background: var(--schirm);
+}
+
+/* Abwägung unter jedem Telefon */
+.abwaegung { margin: var(--raum-m) 0 0; max-width: 24rem; font-size: var(--text-s); }
+.abwaegung dt { font-weight: 600; margin-top: var(--raum-s); }
+.abwaegung dd { margin: 0.125rem 0 0; }
+.abwaegung ul { margin: 0; padding-left: 1.1rem; }
+
+.fuss {
+  margin-top: var(--raum-xl);
+  padding-top: var(--raum-m);
+  border-top: 1px solid var(--linie);
+  font-size: var(--text-s);
+  color: var(--tinte-2);
+  max-width: 42rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="seite">
+
+<header class="kopf">
+  <p class="kicker">Traumjobfinder · Scribble 1 · 30.09.2026</p>
+  <h1>Wie soll sich der Test anfühlen?</h1>
+  <p>Drei Richtungen, alle mit denselben sechs Beispielfragen. Einfach durchklicken – am Ende steht ein erster Eindruck. <strong>Die Fragen sind Beispiele, nicht die echten Testfragen.</strong> Aussehen, Farben und Schrift sind bewusst schlicht: Hier geht es nur um das Gefühl beim Antworten.</p>
+  <div class="anrede">
+    <span id="anrede-titel">Anrede zum Ausprobieren:</span>
+    <span class="anrede-knoepfe" role="group" aria-labelledby="anrede-titel">
+      <button type="button" data-anrede="sie" aria-pressed="true">Sie</button>
+      <button type="button" data-anrede="du" aria-pressed="false">du</button>
+    </span>
+  </div>
+</header>
+
+<main class="richtungen">
+
+  <section class="richtung" aria-labelledby="a-titel">
+    <h2 id="a-titel">A · Fragebogen</h2>
+    <p class="idee">Eine Frage je Bildschirm, fünf Stufen, weiter mit einem Tipp.</p>
+    <div class="telefon"><div class="schirm" id="a"></div></div>
+    <dl class="abwaegung">
+      <dt>Spricht dafür</dt>
+      <dd><ul><li>Genau die Form, in der der Test geprüft wurde – die Messung bleibt verlässlich</li><li>Schnell: 60 Fragen in rund zehn Minuten</li></ul></dd>
+      <dt>Spricht dagegen</dt>
+      <dd><ul><li>Nüchtern. Bei 60 Fragen droht Ermüdung</li></ul></dd>
+    </dl>
+  </section>
+
+  <section class="richtung" aria-labelledby="b-titel">
+    <h2 id="b-titel">B · Karten sortieren</h2>
+    <p class="idee">Eine Tätigkeit je Karte. Nach rechts ziehen heißt ja, nach links nein.</p>
+    <div class="telefon"><div class="schirm" id="b"></div></div>
+    <dl class="abwaegung">
+      <dt>Spricht dafür</dt>
+      <dd><ul><li>Spielerisch, auf dem Handy am natürlichsten</li><li>Fühlt sich kürzer an, als es ist</li></ul></dd>
+      <dt>Spricht dagegen</dt>
+      <dd><ul><li>Drei Stufen statt fünf – das verändert den geprüften Test, die Messung wird gröber</li><li>Wischen verführt zum schnellen, unüberlegten Antworten</li></ul></dd>
+    </dl>
+  </section>
+
+  <section class="richtung" aria-labelledby="c-titel">
+    <h2 id="c-titel">C · Gespräch</h2>
+    <p class="idee">Die Fragen kommen als Nachrichten, geantwortet wird mit einem Tipp.</p>
+    <div class="telefon"><div class="schirm" id="c"></div></div>
+    <dl class="abwaegung">
+      <dt>Spricht dafür</dt>
+      <dd><ul><li>Am wärmsten, fühlt sich nach Beratung an</li><li>Führt schon zum späteren KI-Gespräch hin</li></ul></dd>
+      <dt>Spricht dagegen</dt>
+      <dd><ul><li>Am langsamsten: mehr Text je Frage, 60 Fragen werden lang</li><li>Sieht aus wie eine KI, ist aber keine – die Fragen stehen fest. Das darf niemanden täuschen</li></ul></dd>
+    </dl>
+  </section>
+
+</main>
+
+<p class="fuss">Stufe 1 von 3: Scribble. Nichts davon ist angebunden oder gespeichert. Die Beispielfragen stammen nicht aus dem echten Test; welche Fragen die App stellt, legt die Lizenzakte fest (siehe <code>docs/entscheidungen.md</code>, E9).</p>
+
+</div>
+
+<script>
+// ── Daten ──────────────────────────────────────────────────────────
+// Sechs Beispieltätigkeiten, eine je Interessenbereich (Holland, RIASEC).
+// Eigene Formulierungen, keine Items aus einem lizenzierten Test.
+const FRAGEN = [
+  { text: "Ein Fahrrad reparieren", bereich: "R" },
+  { text: "Herausfinden, warum eine Maschine immer wieder ausfällt", bereich: "I" },
+  { text: "Ein Plakat für eine Veranstaltung gestalten", bereich: "A" },
+  { text: "Jemandem etwas Neues beibringen", bereich: "S" },
+  { text: "Andere von einer neuen Idee überzeugen", bereich: "E" },
+  { text: "Rechnungen prüfen und sauber ablegen", bereich: "C" },
+];
+const BEREICHE = {
+  R: { name: "Praktisch", satz: "mit Händen, Werkzeug und Technik" },
+  I: { name: "Forschend", satz: "Dingen auf den Grund gehen" },
+  A: { name: "Gestaltend", satz: "eigene Ideen sichtbar machen" },
+  S: { name: "Sozial", satz: "mit und für Menschen arbeiten" },
+  E: { name: "Unternehmerisch", satz: "überzeugen und voranbringen" },
+  C: { name: "Ordnend", satz: "Abläufe, Zahlen und Sorgfalt" },
+};
+const STUFEN = ["sehr ungern", "eher ungern", "weiß nicht", "eher gern", "sehr gern"];
+
+let anrede = "sie";
+const t = (sie, du) => (anrede === "sie" ? sie : du);
+
+// ── Ergebnis, für alle drei gleich ─────────────────────────────────
+function ergebnis(schirm, punkte, neustart) {
+  const reihe = Object.keys(BEREICHE).sort((x, y) => (punkte[y] || 0) - (punkte[x] || 0));
+  const [erster, zweiter] = reihe;
+  schirm.innerHTML = `
+    <div class="ergebnis">
+      <p class="zaehler">${t("Ihr", "Dein")} erster Eindruck</p>
+      <h3>${t("Am meisten reizt Sie", "Am meisten reizt dich")}: ${BEREICHE[erster].name} und ${BEREICHE[zweiter].name}</h3>
+      <p class="top">${BEREICHE[erster].name} heißt: ${BEREICHE[erster].satz}. ${BEREICHE[zweiter].name}: ${BEREICHE[zweiter].satz}.</p>
+      <ul class="balken">
+        ${Object.keys(BEREICHE).map(b => `
+          <li><span>${BEREICHE[b].name}</span>
+          <span class="spur" role="img" aria-label="${BEREICHE[b].name}: ${punkte[b] || 0} von 4"><span class="wert" style="width:${((punkte[b] || 0) / 4) * 100}%"></span></span></li>`).join("")}
+      </ul>
+      <p class="klein">In der echten App: 60 Fragen zu Interessen, danach Werte und ${t("Ihre", "deine")} Berufserfahrung – und dann die Berufe, samt Weg dorthin.</p>
+      <button type="button" class="nochmal">Noch einmal</button>
+    </div>`;
+  schirm.querySelector(".nochmal").addEventListener("click", neustart);
+}
+
+// ── A · Fragebogen ────────────────────────────────────────────────
+const A = { nr: 0, antworten: [] };
+function zeigeA() {
+  const s = document.getElementById("a");
+  if (A.nr >= FRAGEN.length) {
+    const p = {};
+    A.antworten.forEach((w, i) => (p[FRAGEN[i].bereich] = w));
+    return ergebnis(s, p, () => { A.nr = 0; A.antworten = []; zeigeA(); });
+  }
+  s.innerHTML = `
+    <div class="fortschritt"><span style="width:${(A.nr / FRAGEN.length) * 100}%"></span></div>
+    <p class="zaehler">Frage ${A.nr + 1} von ${FRAGEN.length}</p>
+    <p class="frage-kopf">${t("Wie gern würden Sie das tun?", "Wie gern würdest du das tun?")}</p>
+    <p class="taetigkeit">${FRAGEN[A.nr].text}</p>
+    <div class="skala" role="group" aria-label="Antwort">
+      ${STUFEN.map((st, i) => `<button type="button" data-w="${i}">${st}</button>`).join("")}
+    </div>
+    <button type="button" class="zurueck" ${A.nr === 0 ? "hidden" : ""}>zurück</button>`;
+  s.querySelectorAll(".skala button").forEach(k => k.addEventListener("click", () => {
+    A.antworten[A.nr] = Number(k.dataset.w);
+    A.nr++;
+    zeigeA();
+    s.querySelector(".skala button, .nochmal")?.focus();
+  }));
+  s.querySelector(".zurueck").addEventListener("click", () => { A.nr--; zeigeA(); });
+}
+
+// ── B · Karten ────────────────────────────────────────────────────
+const B = { nr: 0, punkte: {} };
+function zeigeB() {
+  const s = document.getElementById("b");
+  if (B.nr >= FRAGEN.length) {
+    return ergebnis(s, B.punkte, () => { B.nr = 0; B.punkte = {}; zeigeB(); });
+  }
+  const offen = FRAGEN.slice(B.nr, B.nr + 3);
+  s.innerHTML = `
+    <div class="fortschritt"><span style="width:${(B.nr / FRAGEN.length) * 100}%"></span></div>
+    <p class="zaehler">Karte ${B.nr + 1} von ${FRAGEN.length}</p>
+    <p class="frage-kopf" style="margin-top:var(--raum-m)">${t("Reizt Sie das?", "Reizt dich das?")}</p>
+    <div class="stapel">
+      ${offen.map((f, i) => `
+        <div class="karte${i === 0 ? " oben" : ""}" style="z-index:${3 - i};transform:translateY(${i * 10}px) scale(${1 - i * 0.04})" ${i ? 'aria-hidden="true"' : ""}>
+          <span class="marke nein">nein</span><span class="marke ja">ja</span>${f.text}
+        </div>`).join("")}
+    </div>
+    <div class="karten-knoepfe">
+      <button type="button" data-w="0">nein</button>
+      <button type="button" data-w="2">weiß nicht</button>
+      <button type="button" class="ja" data-w="4">ja</button>
+    </div>
+    <p class="hinweis">Oder die Karte nach links oder rechts ziehen</p>`;
+
+  const karte = s.querySelector(".karte.oben");
+  const nein = karte.querySelector(".marke.nein");
+  const ja = karte.querySelector(".marke.ja");
+
+  function entscheiden(wert) {
+    B.punkte[FRAGEN[B.nr].bereich] = wert;
+    const richtung = wert === 4 ? 1 : wert === 0 ? -1 : 0;
+    karte.style.transform = richtung
+      ? `translateX(${richtung * 140}%) rotate(${richtung * 18}deg)`
+      : "translateY(-30%) scale(0.9)";
+    karte.style.opacity = "0";
+    setTimeout(() => {
+      B.nr++;
+      zeigeB();
+      document.querySelector("#b .karten-knoepfe button, #b .nochmal")?.focus();
+    }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 280);
+  }
+  s.querySelectorAll(".karten-knoepfe button").forEach(k =>
+    k.addEventListener("click", () => entscheiden(Number(k.dataset.w))));
+
+  // Ziehen mit Finger oder Maus
+  let start = null;
+  karte.addEventListener("pointerdown", e => {
+    start = e.clientX;
+    karte.setPointerCapture(e.pointerId);
+    karte.classList.add("zieht");
+  });
+  karte.addEventListener("pointermove", e => {
+    if (start === null) return;
+    const dx = e.clientX - start;
+    karte.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
+    ja.style.opacity = Math.max(0, Math.min(1, dx / 90));
+    nein.style.opacity = Math.max(0, Math.min(1, -dx / 90));
+  });
+  const loslassen = e => {
+    if (start === null) return;
+    const dx = e.clientX - start;
+    start = null;
+    karte.classList.remove("zieht");
+    if (dx > 90) entscheiden(4);
+    else if (dx < -90) entscheiden(0);
+    else { karte.style.transform = ""; ja.style.opacity = nein.style.opacity = 0; }
+  };
+  karte.addEventListener("pointerup", loslassen);
+  karte.addEventListener("pointercancel", loslassen);
+}
+
+// ── C · Gespräch ──────────────────────────────────────────────────
+// Die Nachrichten tragen beide Anreden, damit der Schalter auch den
+// bisherigen Verlauf umstellt.
+const EINLEITUNG = [
+  ["Stellen Sie sich vor, Sie hätten einen ganzen Tag Zeit dafür. Wie gern würden Sie …", "Stell dir vor, du hättest einen ganzen Tag Zeit dafür. Wie gern würdest du …"],
+  ["Etwas ganz anderes. Wie gern würden Sie …", "Etwas ganz anderes. Wie gern würdest du …"],
+  ["Und wie sieht es damit aus?", "Und wie sieht es damit aus?"],
+  ["Jetzt geht es um Menschen. Wie gern würden Sie …", "Jetzt geht es um Menschen. Wie gern würdest du …"],
+  ["Fast geschafft. Wie gern würden Sie …", "Fast geschafft. Wie gern würdest du …"],
+  ["Letzte Frage:", "Letzte Frage:"],
+];
+const C = { nr: 0, punkte: {}, verlauf: [], gezeigt: 0 };
+function zeigeC() {
+  const s = document.getElementById("c");
+  if (C.nr >= FRAGEN.length && C.fertig) {
+    return ergebnis(s, C.punkte, () => { Object.assign(C, { nr: 0, punkte: {}, verlauf: [], gezeigt: 0, fertig: false }); zeigeC(); });
+  }
+  if (C.verlauf.length === 0) {
+    C.verlauf.push({ wer: "app", sie: "Hallo! Ich möchte herausfinden, welche Tätigkeiten Ihnen Freude machen. Es gibt kein Richtig oder Falsch – nur Ihr Bauchgefühl.", du: "Hallo! Ich möchte herausfinden, welche Tätigkeiten dir Freude machen. Es gibt kein Richtig oder Falsch – nur dein Bauchgefühl." });
+    naechsteFrageC();
+  }
+  s.innerHTML = `
+    <div class="verlauf" aria-live="polite">
+      ${C.verlauf.map((n, i) => `<div class="blase ${n.wer}${i >= C.gezeigt ? " neu" : ""}">${anrede === "sie" ? n.sie : n.du}${n.taetigkeit ? `<strong>${n.taetigkeit}</strong>` : ""}</div>`).join("")}
+    </div>
+    <div class="chips" role="group" aria-label="Antwort">
+      ${C.nr < FRAGEN.length
+        ? STUFEN.map((st, i) => `<button type="button" data-w="${i}">${st}</button>`).join("")
+        : `<button type="button" data-w="ende">${t("Zu meinem Eindruck", "Zu meinem Eindruck")}</button>`}
+    </div>`;
+  C.gezeigt = C.verlauf.length;
+  const v = s.querySelector(".verlauf");
+  v.scrollTop = v.scrollHeight;
+  s.querySelectorAll(".chips button").forEach(k => k.addEventListener("click", () => {
+    if (k.dataset.w === "ende") { C.fertig = true; zeigeC(); s.querySelector(".nochmal")?.focus(); return; }
+    const w = Number(k.dataset.w);
+    C.punkte[FRAGEN[C.nr].bereich] = w;
+    C.verlauf.push({ wer: "person", sie: STUFEN[w], du: STUFEN[w] });
+    C.nr++;
+    if (C.nr < FRAGEN.length) naechsteFrageC();
+    else C.verlauf.push({ wer: "app", sie: "Danke, das reicht für einen ersten Eindruck.", du: "Danke, das reicht für einen ersten Eindruck." });
+    zeigeC();
+    s.querySelector(".chips button")?.focus();
+  }));
+}
+function naechsteFrageC() {
+  const [sie, du] = EINLEITUNG[C.nr];
+  C.verlauf.push({ wer: "app", sie, du, taetigkeit: FRAGEN[C.nr].text });
+}
+
+// ── Anrede umschalten ─────────────────────────────────────────────
+document.querySelectorAll("[data-anrede]").forEach(k => k.addEventListener("click", () => {
+  anrede = k.dataset.anrede;
+  document.querySelectorAll("[data-anrede]").forEach(x => x.setAttribute("aria-pressed", String(x === k)));
+  zeigeA(); zeigeB(); zeigeC();
+}));
+
+zeigeA(); zeigeB(); zeigeC();
+</script>
+</body>
+</html>
