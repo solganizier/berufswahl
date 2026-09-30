@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Traumjobfinder – Scribble: Testgefühl</title>
+<title>Traumjobfinder Testgefühl</title>
 <style>
 /*
   Scribble 1 · 30.09.2026 · Stufe 1, grob.
@@ -15,7 +15,15 @@
   --tinte-2 #545A63 auf Schirm 6,95 · auf Grund 6,22
   --akzent  #3730A3 auf Schirm 9,93 · auf Grund 8,88 · Weiß darauf 9,93
   --tinte auf --akzent-hell #E6E4F6 13,21 · --akzent darauf 7,94
-  --rahmen  #7C828B auf Schirm und Grund ≥ 3:1 (Bedienelemente, 1.4.11)
+  --rahmen  #7C828B auf Schirm 3,87 · auf Grund 3,46 (Bedienelemente, 1.4.11)
+
+  Dunkel (folgt der Einstellung des Geräts):
+  --tinte   #ECEDEF auf Schirm #1F2229 13,59 · auf Grund #15171C 15,31
+  --tinte-2 #A9AFB8 auf Schirm 7,21 · auf Grund 8,12
+  --akzent  #A5A1F5 auf Schirm 6,84 · auf Grund 7,70 · auf Blase 5,76
+  --auf-akzent #15171C auf --akzent 7,70
+  --tinte auf --akzent-hell #2F2C5A 11,01 · --akzent darauf 5,54
+  --rahmen  #7D848F auf Schirm 4,22 · auf Grund 4,76
 */
 :root {
   color-scheme: light;
@@ -28,6 +36,8 @@
   --blase: #EEF0F3;
   --rahmen: #7C828B;
   --linie: #DDD9D2;
+  --auf-akzent: #FFFFFF;
+  --schatten: rgb(0 0 0 / 0.06);
 
   --schrift: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --text-s: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem);
@@ -41,6 +51,22 @@
   --raum-xl: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
 
   --radius: 0.75rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --grund: #15171C; --schirm: #1F2229; --tinte: #ECEDEF; --tinte-2: #A9AFB8;
+    --akzent: #A5A1F5; --akzent-hell: #2F2C5A; --blase: #2B2F38;
+    --rahmen: #7D848F; --linie: #383D47; --auf-akzent: #15171C;
+    --schatten: rgb(0 0 0 / 0.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --grund: #15171C; --schirm: #1F2229; --tinte: #ECEDEF; --tinte-2: #A9AFB8;
+  --akzent: #A5A1F5; --akzent-hell: #2F2C5A; --blase: #2B2F38;
+  --rahmen: #7D848F; --linie: #383D47; --auf-akzent: #15171C;
+  --schatten: rgb(0 0 0 / 0.35);
+  color-scheme: dark;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -103,7 +129,7 @@ h1 {
 }
 .anrede-knoepfe button[aria-pressed="true"] {
   background: var(--akzent);
-  color: #FFFFFF;
+  color: var(--auf-akzent);
 }
 
 /* ── Die drei Richtungen ───────────────────────────────────────── */
@@ -113,6 +139,7 @@ h1 {
   gap: var(--raum-l);
   align-items: start;
 }
+.richtung { min-width: 0; }
 .richtung h2 { margin: 0 0 0.25rem; font-size: var(--text-l); line-height: 1.25; }
 .richtung .idee {
   margin: 0 0 var(--raum-m);
@@ -124,7 +151,7 @@ h1 {
   background: var(--schirm);
   border: 1px solid var(--linie);
   border-radius: 1.75rem;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 8px 24px rgb(0 0 0 / 0.06);
+  box-shadow: 0 1px 2px var(--schatten), 0 8px 24px var(--schatten);
   height: 36rem;
   max-width: 24rem;
   overflow: hidden;
@@ -202,7 +229,7 @@ h1 {
   background: var(--schirm);
   border: 1px solid var(--linie);
   border-radius: 1.25rem;
-  box-shadow: 0 6px 18px rgb(0 0 0 / 0.08);
+  box-shadow: 0 6px 18px var(--schatten);
   font-size: var(--text-l);
   font-weight: 600;
   line-height: 1.3;
@@ -220,8 +247,8 @@ h1 {
   font-weight: 600;
   opacity: 0;
 }
-.karte .marke.ja { right: var(--raum-m); background: var(--akzent); color: #FFFFFF; }
-.karte .marke.nein { left: var(--raum-m); background: var(--tinte); color: #FFFFFF; }
+.karte .marke.ja { right: var(--raum-m); background: var(--akzent); color: var(--auf-akzent); }
+.karte .marke.nein { left: var(--raum-m); background: var(--tinte); color: var(--schirm); }
 .karten-knoepfe {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -234,7 +261,7 @@ h1 {
   background: var(--schirm);
   padding: 0 var(--raum-s);
 }
-.karten-knoepfe .ja { background: var(--akzent); border-color: var(--akzent); color: #FFFFFF; }
+.karten-knoepfe .ja { background: var(--akzent); border-color: var(--akzent); color: var(--auf-akzent); }
 .hinweis { margin: var(--raum-s) 0 0; font-size: var(--text-s); color: var(--tinte-2); text-align: center; }
 
 /* C · Gespräch */
@@ -254,7 +281,7 @@ h1 {
 }
 .blase.neu { animation: auftauchen 0.25s ease; }
 .blase.app { align-self: flex-start; background: var(--blase); border-bottom-left-radius: 0.25rem; }
-.blase.person { align-self: flex-end; background: var(--akzent); color: #FFFFFF; border-bottom-right-radius: 0.25rem; }
+.blase.person { align-self: flex-end; background: var(--akzent); color: var(--auf-akzent); border-bottom-right-radius: 0.25rem; }
 .blase strong { display: block; margin-top: 0.25rem; }
 .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-top: var(--raum-s); border-top: 1px solid var(--linie); }
 .chips button {
