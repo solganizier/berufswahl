@@ -38,9 +38,9 @@ Sitzung fortschreiben.
 
 ## Was als Nächstes ansteht
 
-1. **Max entscheidet** über drei Punkte aus der Recherche: kommerziell
-   oder nicht (davon hängt der Testsatz ab), Verhältnis zu New Plan,
-   Cloud oder Gerät für das KI-Gespräch
+1. ~~Max entscheidet über drei Punkte aus der Recherche~~ – erledigt
+   am 30.09.2026: E9 kommerziell planen, E10 Distanz als Kern, E11
+   KI-Gespräch zuschaltbar in der EU. Dazu E12 Berufsverzeichnis
 2. **Lizenzakte anlegen**, bevor eine Zeile Code entsteht: jede
    Lizenzseite im Volltext lesen und mit Abrufdatum sichern (O*NET Tools
    Developer License, O*NET Database License, IPIP, ESCO). **Am
