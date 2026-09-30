@@ -47,11 +47,10 @@ Sitzung fortschreiben.
    30.09.2026 waren diese Seiten von der Netzwerkeinstellung der
    Web-Umgebung gesperrt** – entweder die Domains freigeben oder Max
    lädt die Seiten selbst
-3. **Scribble liegt vor, Max wählt:**
-   `entwuerfe/2026-09-30-scribble-testgefuehl.html` – drei Wege, wie
-   sich der Test anfühlen kann: A Fragebogen, B Karten sortieren,
-   C Gespräch. Mit Schalter für die Anrede (Sie/du), damit auch diese
-   Frage am Material entschieden wird
+3. ~~Scribble~~ – erledigt am 30.09.2026: Max wählt **A, Fragebogen**
+   (E13). Das Scribble liegt in `entwuerfe/2026-09-30-scribble-testgefuehl.html`,
+   als Browserseite unter https://claude.ai/artifact/AgPxpdN6EH5CqA8DYqNP1m
+   (privat, nur Max)
 4. **Erste Version:** Tests, Abgleich, Ergebnisseite. Das KI-Gespräch
    folgt als zweiter Schritt (E4)
 
