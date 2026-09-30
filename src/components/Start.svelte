@@ -1,49 +1,57 @@
 <script lang="ts">
   // Die Startseite. Texte sind Platzhalter – was hier steht, entscheidet Max.
+  import { TEILE } from "../lib/ablauf";
+  import { BEISPIEL_NAME } from "../lib/beispiel";
+
   interface Props {
-    gesamt: number;
     /** Wie weit ein gespeicherter Durchgang schon ist (0 = keiner) */
     position: number;
+    fertig: boolean;
     onbeginnen: () => void;
     onweiter: () => void;
+    onbeispiel: () => void;
   }
-  let { gesamt, position, onbeginnen, onweiter }: Props = $props();
+  let { position, fertig, onbeginnen, onweiter, onbeispiel }: Props = $props();
 
-  const angefangen = $derived(position > 0);
-  const fertig = $derived(position >= gesamt);
+  const fragenGesamt = TEILE.reduce((s, t) => s + t.fragen.length, 0);
 </script>
 
 <main class="seite start">
-  <p class="kicker">Traumjobfinder · Entwurf</p>
+  <p class="kicker">Traumjobfinder · Vorschau</p>
   <h1>Welche Berufe passen zu Ihnen?</h1>
   <p class="vorspann">
-    Sie beantworten Fragen zu Ihren Interessen, Ihren Werten und Ihrer Berufserfahrung.
-    Daraus entsteht eine Liste von Berufen, die zu Ihnen passen – und wie weit der Weg
-    von Ihrem heutigen Beruf dorthin ist.
+    Sie beantworten Fragen zu Ihren Interessen, zu dem, was Ihnen wichtig ist, und zu dem, was Sie
+    schon getan haben. Daraus entsteht eine Liste von Berufen, die zu Ihnen passen – und wie weit
+    der Weg dorthin ist.
   </p>
 
   <ol class="ablauf">
-    <li><strong>Interessen</strong><span>in diesem Entwurf: {gesamt} Beispielfragen</span></li>
-    <li><strong>Werte</strong><span>folgt</span></li>
-    <li><strong>Berufserfahrung</strong><span>folgt</span></li>
-    <li><strong>Ihre Berufe und der Weg dorthin</strong><span>folgt</span></li>
+    {#each TEILE as teil (teil.id)}
+      <li><strong>{teil.titel}</strong><span>{teil.fragen.length} Fragen</span></li>
+    {/each}
+    <li><strong>Ihre Berufe und der Weg dorthin</strong><span>mit Begründung</span></li>
   </ol>
 
   <p class="datenschutz">Ihre Antworten bleiben auf diesem Gerät. Es gibt kein Konto, und nichts wird übertragen.</p>
 
   <p class="hinweis" role="note">
-    <strong>Entwurf.</strong> Die Fragen sind Beispiele, nicht der echte Test. Das Ergebnis sagt deshalb noch nichts aus.
+    <strong>Vorschau.</strong> Fragen und Berufsdaten sind Beispiele. So funktioniert die App – was
+    sie Ihnen empfiehlt, sagt noch nichts aus.
   </p>
 
   <div class="knoepfe">
-    {#if angefangen}
+    {#if position > 0}
       <button type="button" class="knopf haupt" onclick={onweiter}>
-        {fertig ? "Zum Ergebnis" : `Weitermachen bei Frage ${position + 1} von ${gesamt}`}
+        {fertig ? "Zu Ihrem Ergebnis" : "Weitermachen, wo Sie aufgehört haben"}
       </button>
       <button type="button" class="knopf neben" onclick={onbeginnen}>Von vorn beginnen</button>
     {:else}
-      <button type="button" class="knopf haupt" onclick={onbeginnen}>Test beginnen</button>
+      <button type="button" class="knopf haupt" onclick={onbeginnen}>Test beginnen · {fragenGesamt} Fragen</button>
     {/if}
+    <button type="button" class="textknopf beispiel" onclick={onbeispiel}>
+      Ergebnis einer Beispielperson ansehen
+    </button>
+    <p class="beispiel-wer">{BEISPIEL_NAME}</p>
   </div>
 </main>
 
@@ -91,5 +99,12 @@
     padding-top: var(--raum-l);
     display: grid;
     gap: var(--raum-s);
+  }
+  .beispiel { justify-self: center; margin-top: var(--raum-xs); }
+  .beispiel-wer {
+    margin: calc(-1 * var(--raum-s)) 0 0;
+    text-align: center;
+    font-size: var(--text-s);
+    color: var(--tinte-2);
   }
 </style>

@@ -3,19 +3,24 @@
 // oder bei gesperrtem Speicher läuft die App trotzdem, nur ohne
 // Weitermachen nach dem Schließen.
 
+import type { Ausschluss } from "./ablauf";
+
 const SCHLUESSEL = "traumjobfinder:stand";
-const FASSUNG = 1;
+const FASSUNG = 2;
 
 export interface Stand {
   fassung: typeof FASSUNG;
-  /** Antwort je Frage-ID */
+  /** Antwort je Frage-ID, über alle Testteile */
   antworten: Record<string, number>;
-  /** Index der nächsten offenen Frage */
+  /** Index des aktuellen Schritts in SCHRITTE; = Länge heißt: fertig */
   position: number;
+  ausschluesse: Ausschluss[];
+  /** Wahr, solange die Beispielperson angezeigt wird */
+  beispiel: boolean;
 }
 
 export function neuerStand(): Stand {
-  return { fassung: FASSUNG, antworten: {}, position: 0 };
+  return { fassung: FASSUNG, antworten: {}, position: 0, ausschluesse: [], beispiel: false };
 }
 
 export function laden(): Stand | null {

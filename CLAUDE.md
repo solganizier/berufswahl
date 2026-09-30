@@ -57,7 +57,10 @@ Max' Vorschau: `vorschau-berufswahl.cmd` per Doppelklick. Max nie auf
 die Kommandozeile verweisen, wenn er nur die App sehen will.
 
 Die Auswertung (`src/lib/auswertung.ts`) sind reine Funktionen ohne
-Oberfläche. Alle Farben sind Tokens in `src/styles/tokens.css`, mit
+Oberfläche. Fragen und Berufe liegen getrennt davon in
+`src/lib/interessen.ts`, `werte.ts`, `erfahrung.ts` und `berufe.ts` –
+**dort und nur dort** werden die Beispieldaten gegen die echten
+getauscht (Tabelle in `docs/uebergabe.md`). Alle Farben sind Tokens in `src/styles/tokens.css`, mit
 Dunkelmodus und belegten Kontrasten; Bauteile greifen nur über `var(--…)`
 darauf zu.
 

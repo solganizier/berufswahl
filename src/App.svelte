@@ -1,76 +1,125 @@
 <script lang="ts">
-  // Der Ablauf: Start → Fragebogen → Ergebnis. Kein Router – drei
-  // Ansichten, ein Zustand, gespeichert auf dem Gerät.
+  // Der Ablauf: Start → drei Testteile → Ausschlüsse → Ergebnis. Kein
+  // Router: Eine Position zeigt auf einen Schritt in SCHRITTE, der Stand
+  // liegt auf dem Gerät.
   import Start from "./components/Start.svelte";
+  import Teilstart from "./components/Teilstart.svelte";
   import Fragebogen from "./components/Fragebogen.svelte";
+  import Ausschluesse from "./components/Ausschluesse.svelte";
   import Ergebnis from "./components/Ergebnis.svelte";
-  import { FRAGEN } from "./lib/fragen";
-  import { interessenProfil } from "./lib/auswertung";
+  import { SCHRITTE, type Ausschluss } from "./lib/ablauf";
+  import { BEISPIEL_ANTWORTEN, BEISPIEL_AUSSCHLUESSE } from "./lib/beispiel";
   import { laden, loeschen, neuerStand, speichern, type Stand } from "./lib/speicher";
 
   let stand = $state<Stand>(laden() ?? neuerStand());
-  let ansicht = $state<"start" | "fragebogen" | "ergebnis">("start");
+  let aufStart = $state(true);
 
-  const profil = $derived(interessenProfil(stand.antworten, FRAGEN));
+  const fertig = $derived(stand.position >= SCHRITTE.length);
+  const schritt = $derived(SCHRITTE[stand.position]);
 
   function sichern() {
     speichern($state.snapshot(stand));
+  }
+  function gehe(position: number) {
+    stand.position = Math.max(0, Math.min(SCHRITTE.length, position));
+    sichern();
   }
 
   function beginnen() {
     stand = neuerStand();
     sichern();
-    ansicht = "fragebogen";
+    aufStart = false;
   }
-
   function weitermachen() {
-    ansicht = stand.position >= FRAGEN.length ? "ergebnis" : "fragebogen";
+    aufStart = false;
+  }
+  function beispielZeigen() {
+    stand = {
+      ...neuerStand(),
+      antworten: { ...BEISPIEL_ANTWORTEN },
+      ausschluesse: [...BEISPIEL_AUSSCHLUESSE],
+      position: SCHRITTE.length,
+      beispiel: true,
+    };
+    // Die Beispielperson wird nicht gespeichert – ein eigener Durchgang bleibt unberührt.
+    aufStart = false;
   }
 
   function antworten(wert: number) {
-    stand.antworten[FRAGEN[stand.position].id] = wert;
-    stand.position += 1;
-    sichern();
-    if (stand.position >= FRAGEN.length) ansicht = "ergebnis";
+    if (schritt?.art !== "frage") return;
+    stand.antworten[schritt.frage.id] = wert;
+    gehe(stand.position + 1);
   }
-
-  function zurueck() {
-    if (stand.position > 0) stand.position -= 1;
-    sichern();
+  function ausschluesseFertig(auswahl: Ausschluss[]) {
+    stand.ausschluesse = auswahl;
+    gehe(SCHRITTE.length);
   }
-
   function aendern() {
-    stand.position = FRAGEN.length - 1;
-    sichern();
-    ansicht = "fragebogen";
+    gehe(SCHRITTE.length - 1);
   }
-
   function vonVorn() {
     loeschen();
     stand = neuerStand();
-    ansicht = "start";
+    aufStart = true;
+  }
+  /** Zurück aus der Beispielansicht: der eigene Stand, wie er gespeichert war. */
+  function beispielVerlassen() {
+    stand = laden() ?? neuerStand();
+    aufStart = true;
+  }
+  function pause() {
+    if (stand.beispiel) return beispielVerlassen();
+    aufStart = true;
   }
 
   // Jede neue Ansicht beginnt oben.
   $effect(() => {
-    ansicht;
+    stand.position;
+    aufStart;
     window.scrollTo(0, 0);
   });
 </script>
 
-{#if ansicht === "start"}
-  <Start gesamt={FRAGEN.length} position={stand.position} onbeginnen={beginnen} onweiter={weitermachen} />
-{:else if ansicht === "fragebogen"}
-  {@const frage = FRAGEN[stand.position]}
+{#if aufStart}
+  <Start
+    position={stand.beispiel ? 0 : stand.position}
+    fertig={fertig && !stand.beispiel}
+    onbeginnen={beginnen}
+    onweiter={weitermachen}
+    onbeispiel={beispielZeigen}
+  />
+{:else if fertig}
+  <Ergebnis
+    antworten={stand.antworten}
+    ausschluesse={stand.ausschluesse}
+    beispiel={stand.beispiel}
+    onaendern={aendern}
+    onneu={stand.beispiel ? beispielVerlassen : vonVorn}
+  />
+{:else if schritt.art === "teilstart"}
+  <Teilstart
+    teil={schritt.teil}
+    teilNr={schritt.teilNr}
+    onweiter={() => gehe(stand.position + 1)}
+    onzurueck={() => gehe(stand.position - 1)}
+    onpause={pause}
+  />
+{:else if schritt.art === "frage"}
   <Fragebogen
-    {frage}
-    nummer={stand.position + 1}
-    gesamt={FRAGEN.length}
-    gewaehlt={stand.antworten[frage.id]}
+    teil={schritt.teil}
+    teilNr={schritt.teilNr}
+    frage={schritt.frage}
+    nummer={schritt.nummer}
+    gewaehlt={stand.antworten[schritt.frage.id]}
     onantwort={antworten}
-    onzurueck={zurueck}
-    onpause={() => (ansicht = "start")}
+    onzurueck={() => gehe(stand.position - 1)}
+    onpause={pause}
   />
 {:else}
-  <Ergebnis {profil} onaendern={aendern} onneu={vonVorn} />
+  <Ausschluesse
+    gewaehlt={stand.ausschluesse}
+    onfertig={ausschluesseFertig}
+    onzurueck={() => gehe(stand.position - 1)}
+    onpause={pause}
+  />
 {/if}

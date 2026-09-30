@@ -5,13 +5,33 @@ Sitzung fortschreiben.
 
 ## Was es gibt
 
-- **Der Entwurf (Stufe 2) steht** (30.09.2026): Startseite, Fragebogen
-  in Richtung A mit **zwölf Beispielfragen**, Interessenprofil als
-  Ergebnis. Der Stand bleibt auf dem Gerät, Weitermachen nach dem
-  Schließen klappt, Zurück zeigt die gegebene Antwort, Tasten 1–5 am
-  Rechner. Im Browser geprüft: 320, 390 und 1280 px, hell und dunkel,
-  13 Prüfpunkte ohne Befund. Für Max im Browser:
+- **Die Vorschau des ganzen Ablaufs steht** (30.09.2026, auf Max'
+  Wunsch „als ob die Lizenzen frei wären"):
+  Start → Interessen (12) → Werte (6) → Erfahrung (11, drei Stufen) →
+  harte Grenzen → **Berufsliste mit Passung und Weg**, Begründung je
+  Beruf („Das bringen Sie mit", „Das wäre neu"), umschaltbar nach
+  „Beste Passung" / „Kürzester Weg". Dazu eine **Beispielperson**
+  (Sachbearbeiterin, 44), die das Ergebnis ohne 29 Klicks zeigt und den
+  eigenen Stand nicht berührt. Im Browser geprüft: 18 Prüfpunkte,
+  320/390/1280 px, hell und dunkel, ohne Befund. Für Max:
   https://claude.ai/artifact/VuBKKd6AXZA1sTbzmbMndD (privat)
+- **Was davon Beispiel ist – und wo das Echte hineinkommt:**
+
+  | Beispiel | wird ersetzt durch | Stelle |
+  |---|---|---|
+  | 12 Interessenfragen | deutsche O*NET-IP-Kurzform, 60 Fragen | `src/lib/interessen.ts` |
+  | 6 Werteaussagen | Übersetzung des O*NET WIP | `src/lib/werte.ts` |
+  | 11 grobe Tätigkeiten | aus O*NET-Arbeitsaktivitäten bzw. ESCO | `src/lib/erfahrung.ts` |
+  | 30 Berufe, Profile geschätzt | O*NET 31.0 über die ESCO-Überleitung | `src/lib/berufe.ts` |
+
+  Die Auswertung (`src/lib/auswertung.ts`) bleibt – sie braucht nur je
+  Frage einen `schluessel` und je Beruf die Profile. **Die Fachseiten
+  waren am 30.09.2026 von hier aus weiter gesperrt**; die echten Daten
+  kommen, sobald sie erreichbar sind
+- **Setzungen, im Pilot zu prüfen** (alle in `auswertung.ts` begründet):
+  Passung = 70 % Interessen + 30 % Werte, je als Profilkorrelation;
+  Passung „hoch" ab 0,85, „mittel" ab 0,7; Weg „nah" ab 75 % mitgebrachter
+  Kerntätigkeiten, „mittel" ab 40 % (gelegentlich zählt halb)
 - **Alle Texte in der App sind Platzhalter.** Was dort steht, entscheidet
   Max (E14: gesiezt)
 
@@ -61,13 +81,14 @@ Sitzung fortschreiben.
    als Browserseite unter https://claude.ai/artifact/AgPxpdN6EH5CqA8DYqNP1m
    (privat, nur Max)
 4. **Erste Version, in dieser Reihenfolge:**
-   - Die echten Interessenfragen einsetzen (nach der Lizenzakte)
+   - Die echten Fragen und Berufsdaten einsetzen (nach der Lizenzakte),
+     an den Stellen aus der Tabelle oben
    - Eigenes Erscheinungsbild – als Scribble mit zwei bis drei
      Richtungen, Max wählt. Bis dahin die schlichte Scribble-Palette
-   - Werte-Teil und Erfahrungsteil (drei Stufen: nie · gelegentlich ·
-     regelmäßig), beide in Form A
-   - Berufsdaten: O*NET-Profile über die ESCO-Überleitung auf deutsche
-     Namen (E12), dann Abgleich und Distanz zum heutigen Beruf (E10)
+   - ~~Werte-Teil, Erfahrungsteil, Abgleich, Distanz~~ – als Vorschau
+     gebaut am 30.09.2026, mit Beispieldaten
+   - Persönlichkeit (IPIP-Big-Five, E9) ist noch nicht eingeplant: laut
+     Recherche kleines Gewicht, eher Stoff fürs KI-Gespräch
    - Das KI-Gespräch folgt als zweiter Schritt (E4, E11)
 5. **Wohin ausliefern:** Noch offen. Die Websites liegen bei Febas unter
    einem Auftragsverarbeitungsvertrag – ob die App dort eine eigene
@@ -75,8 +96,6 @@ Sitzung fortschreiben.
 
 ## Offen
 
-- **Anrede in der App:** „du" oder „Sie"? Bei Berufstätigen nicht
-  selbstverständlich – vor dem ersten Text zu klären
 - **Produktname:** Traumjobfinder ist Arbeitstitel. Die Recherche rät
   von Versprechen wie „der richtige Beruf" ab – der Name verspricht
   viel. Vor einer Festlegung außerdem prüfen, was besetzt ist

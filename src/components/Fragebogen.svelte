@@ -1,24 +1,25 @@
 <script lang="ts">
   // Richtung A (E13): eine Frage je Bildschirm, weiter mit einem Tipp.
-  import type { Frage } from "../lib/fragen";
-  import { INTERESSEN_SKALA } from "../lib/skalen";
+  // Gilt für alle Testteile; nur Kopfzeile und Antwortstufen wechseln.
+  import { TEILE, type Frage, type Teil } from "../lib/ablauf";
 
   interface Props {
+    teil: Teil;
+    teilNr: number;
     frage: Frage;
     nummer: number;
-    gesamt: number;
     /** Die schon gegebene Antwort, wenn jemand zurückgeht */
     gewaehlt: number | undefined;
     onantwort: (wert: number) => void;
     onzurueck: () => void;
     onpause: () => void;
   }
-  let { frage, nummer, gesamt, gewaehlt, onantwort, onzurueck, onpause }: Props = $props();
+  let { teil, teilNr, frage, nummer, gewaehlt, onantwort, onzurueck, onpause }: Props = $props();
 
-  const kopf = "Wie gern würden Sie das tun?";
+  const stufen = $derived(teil.skala.stufen);
   let ueberschrift = $state<HTMLElement>();
 
-  // Neue Frage: Fokus auf die Tätigkeit, damit Bildschirmleser sie vorlesen
+  // Neue Frage: Fokus auf die Aussage, damit Bildschirmleser sie vorlesen
   // und die Tastatur oben weitermacht.
   $effect(() => {
     frage.id;
@@ -28,9 +29,9 @@
   function taste(e: KeyboardEvent) {
     if (e.altKey || e.ctrlKey || e.metaKey || e.repeat) return;
     const n = Number(e.key);
-    if (Number.isInteger(n) && n >= 1 && n <= INTERESSEN_SKALA.length) {
+    if (Number.isInteger(n) && n >= 1 && n <= stufen.length) {
       e.preventDefault();
-      onantwort(INTERESSEN_SKALA[n - 1].wert);
+      onantwort(stufen[n - 1].wert);
     }
   }
 </script>
@@ -39,18 +40,21 @@
 
 <main class="seite fragebogen">
   <div class="kopfzeile">
-    <p class="zaehler">Frage {nummer} von {gesamt}</p>
+    <p class="zaehler">
+      <span class="teil">Teil {teilNr} von {TEILE.length} · {teil.titel}</span>
+      <span>Frage {nummer} von {teil.fragen.length}</span>
+    </p>
     <button type="button" class="textknopf" onclick={onpause}>Pause</button>
   </div>
   <div class="fortschritt" aria-hidden="true">
-    <span style:width="{((nummer - 1) / gesamt) * 100}%"></span>
+    <span style:width="{((nummer - 1) / teil.fragen.length) * 100}%"></span>
   </div>
 
-  <p class="frage-kopf">{kopf}</p>
-  <h1 class="taetigkeit" tabindex="-1" bind:this={ueberschrift}>{frage.text}</h1>
+  <p class="frage-kopf">{teil.kopf}</p>
+  <h1 class="aussage" tabindex="-1" bind:this={ueberschrift}>{frage.text}</h1>
 
-  <div class="skala" role="group" aria-label={kopf}>
-    {#each INTERESSEN_SKALA as stufe, i (stufe.wert)}
+  <div class="skala" role="group" aria-label={teil.kopf}>
+    {#each stufen as stufe, i (stufe.wert)}
       <button
         type="button"
         class="stufe"
@@ -64,10 +68,8 @@
   </div>
 
   <div class="fusszeile">
-    {#if nummer > 1}
-      <button type="button" class="textknopf" onclick={onzurueck}>Zurück</button>
-    {/if}
-    <p class="tipp">Tipp: Tasten 1 bis {INTERESSEN_SKALA.length}</p>
+    <button type="button" class="textknopf" onclick={onzurueck}>Zurück</button>
+    <p class="tipp">Tipp: Tasten 1 bis {stufen.length}</p>
   </div>
 </main>
 
@@ -80,10 +82,12 @@
   }
   .zaehler {
     margin: 0;
+    display: grid;
     font-size: var(--text-s);
     color: var(--tinte-2);
     font-variant-numeric: tabular-nums;
   }
+  .zaehler .teil { color: var(--tinte); }
 
   .fortschritt {
     height: 6px;
@@ -103,13 +107,13 @@
     margin: var(--raum-xl) 0 var(--raum-s);
     color: var(--tinte-2);
   }
-  .taetigkeit {
+  .aussage {
     margin: 0 0 var(--raum-l);
     font-size: var(--text-l);
     font-weight: 600;
-    /* zwei Zeilen Platz, damit die Knöpfe bei kurzen und langen
-       Tätigkeiten an derselben Stelle stehen */
-    min-height: 2.4em;
+    /* drei Zeilen Platz, damit die Knöpfe bei kurzen und langen
+       Aussagen an derselben Stelle stehen */
+    min-height: 3.6em;
   }
 
   .skala {
