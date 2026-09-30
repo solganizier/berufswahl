@@ -5,15 +5,24 @@ Sitzung fortschreiben.
 
 ## Was es gibt
 
-- Die Idee und acht Entscheidungen (`entscheidungen.md`)
+- **Der Entwurf (Stufe 2) steht** (30.09.2026): Startseite, Fragebogen
+  in Richtung A mit **zwölf Beispielfragen**, Interessenprofil als
+  Ergebnis. Der Stand bleibt auf dem Gerät, Weitermachen nach dem
+  Schließen klappt, Zurück zeigt die gegebene Antwort, Tasten 1–5 am
+  Rechner. Im Browser geprüft: 320, 390 und 1280 px, hell und dunkel,
+  13 Prüfpunkte ohne Befund. Für Max im Browser:
+  https://claude.ai/artifact/VuBKKd6AXZA1sTbzmbMndD (privat)
+- **Alle Texte in der App sind Platzhalter.** Was dort steht, entscheidet
+  Max (E14: gesiezt)
+
+- Die Idee und vierzehn Entscheidungen (`entscheidungen.md`)
 - Die Grundstruktur des Repositories: `CLAUDE.md`, Schutz für `main`
   (`.githooks/pre-push` und `.claude/hooks/session-start.sh`), diese
   Übergabe
 - **Das Fundament:** `recherche/2026-09-30-fundament.md` (Content-Conny).
   Testinstrumente, Berufsverzeichnis, Forschung zum Abgleich, Markt,
   Recht – mit 67 Quellen
-- **Noch kein Code.** Welche Technik die App bekommt, entscheidet
-  Claude nach dem Scribble
+- **Technik:** Vite, Svelte 5, TypeScript (siehe `CLAUDE.md`)
 
 ## Was die Recherche ergeben hat, in fünf Sätzen
 
@@ -51,8 +60,18 @@ Sitzung fortschreiben.
    (E13). Das Scribble liegt in `entwuerfe/2026-09-30-scribble-testgefuehl.html`,
    als Browserseite unter https://claude.ai/artifact/AgPxpdN6EH5CqA8DYqNP1m
    (privat, nur Max)
-4. **Erste Version:** Tests, Abgleich, Ergebnisseite. Das KI-Gespräch
-   folgt als zweiter Schritt (E4)
+4. **Erste Version, in dieser Reihenfolge:**
+   - Die echten Interessenfragen einsetzen (nach der Lizenzakte)
+   - Eigenes Erscheinungsbild – als Scribble mit zwei bis drei
+     Richtungen, Max wählt. Bis dahin die schlichte Scribble-Palette
+   - Werte-Teil und Erfahrungsteil (drei Stufen: nie · gelegentlich ·
+     regelmäßig), beide in Form A
+   - Berufsdaten: O*NET-Profile über die ESCO-Überleitung auf deutsche
+     Namen (E12), dann Abgleich und Distanz zum heutigen Beruf (E10)
+   - Das KI-Gespräch folgt als zweiter Schritt (E4, E11)
+5. **Wohin ausliefern:** Noch offen. Die Websites liegen bei Febas unter
+   einem Auftragsverarbeitungsvertrag – ob die App dort eine eigene
+   Vorschau-Subdomain bekommt, entscheidet Max
 
 ## Offen
 

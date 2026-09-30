@@ -1,0 +1,104 @@
+/*
+  Tokens des Traumjobfinders · Stand: Entwurf (Stufe 2), 30.09.2026
+
+  Noch KEIN eigenes Erscheinungsbild – das kommt als eigenes Scribble.
+  Bis dahin die schlichte Palette aus Scribble 1: Systemschrift, ein
+  Akzent. Die Struktur steht aber schon so, wie sie bleiben soll:
+
+  - Jede Farbe ist ein Token, Bauteile greifen nur über var(--…) zu
+  - Farben, die Text UND Fläche sind, haben zwei Tokens (--akzent für
+    Text, --akzent-flaeche für Flächen). Im Hellen gleicher Wert, im
+    Dunkeln getrennt, sobald die Marke es verlangt
+  - Dunkelmodus folgt der Geräteeinstellung; [data-theme] erlaubt es,
+    ihn gezielt ein- oder auszuschalten (etwa in der Browseransicht auf
+    claude.ai)
+
+  Kontraste (WCAG 2.2), gerechnet am 30.09.2026:
+
+  HELL                                   | DUNKEL
+  --tinte    auf --flaeche  16,52        | 13,59
+  --tinte    auf --grund    14,78        | 15,31
+  --tinte-2  auf --flaeche   6,95        |  7,21
+  --tinte-2  auf --grund     6,22        |  8,12
+  --akzent   auf --flaeche   9,93        |  6,84
+  --akzent   auf --grund     8,88        |  7,70
+  --auf-akzent auf --akzent-flaeche 9,93 |  7,70
+  --tinte    auf --akzent-hell 13,21     | 11,01
+  --akzent   auf --akzent-hell  7,94     |  5,54
+  --akzent-flaeche auf --spur   ≥ 5,7    |  5,76  (Balken, 1.4.11)
+  --rahmen   auf --flaeche   3,87        |  4,22  (Bedienelemente, 1.4.11)
+  --rahmen   auf --grund     3,46        |  4,76
+*/
+:root {
+  /* Flächen */
+  --grund: #F4F2EE;
+  --flaeche: #FFFFFF;
+  --spur: #EEF0F3;
+
+  /* Text */
+  --tinte: #1C1F24;
+  --tinte-2: #545A63;
+
+  /* Akzent – Text und Fläche getrennt */
+  --akzent: #3730A3;
+  --akzent-flaeche: #3730A3;
+  --auf-akzent: #FFFFFF;
+  --akzent-hell: #E6E4F6;
+
+  /* Linien */
+  --rahmen: #7C828B;
+  --linie: #DDD9D2;
+  --schatten: rgb(0 0 0 / 0.06);
+
+  /* Schrift */
+  --schrift: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --text-s: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem);
+  --text-m: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --text-l: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --text-xl: clamp(1.625rem, 1.3rem + 1.4vw, 2.25rem);
+
+  /* Abstände */
+  --raum-xs: clamp(0.375rem, 0.35rem + 0.1vw, 0.5rem);
+  --raum-s: clamp(0.5rem, 0.45rem + 0.2vw, 0.625rem);
+  --raum-m: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
+  --raum-l: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+  --raum-xl: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+
+  /* Formen */
+  --radius: 0.75rem;
+  --spalte: 36rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --grund: #15171C;
+    --flaeche: #1F2229;
+    --spur: #2B2F38;
+    --tinte: #ECEDEF;
+    --tinte-2: #A9AFB8;
+    --akzent: #A5A1F5;
+    --akzent-flaeche: #A5A1F5;
+    --auf-akzent: #15171C;
+    --akzent-hell: #2F2C5A;
+    --rahmen: #7D848F;
+    --linie: #383D47;
+    --schatten: rgb(0 0 0 / 0.35);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --grund: #15171C;
+  --flaeche: #1F2229;
+  --spur: #2B2F38;
+  --tinte: #ECEDEF;
+  --tinte-2: #A9AFB8;
+  --akzent: #A5A1F5;
+  --akzent-flaeche: #A5A1F5;
+  --auf-akzent: #15171C;
+  --akzent-hell: #2F2C5A;
+  --rahmen: #7D848F;
+  --linie: #383D47;
+  --schatten: rgb(0 0 0 / 0.35);
+  color-scheme: dark;
+}

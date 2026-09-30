@@ -1,0 +1,2 @@
+# Windows-Stapeldateien brauchen CRLF, sonst bricht cmd.exe mitten im Skript ab
+*.cmd text eol=crlf

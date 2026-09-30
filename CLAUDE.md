@@ -41,6 +41,26 @@ Repositories nicht zur Verfügung.
    Forschung, Markt, Recht
 3. `docs/entwuerfe/` – Scribbles, zwischen denen Max gewählt hat
 
+## Technik
+
+Vite, Svelte 5 (Runes), TypeScript – kein Server, keine Datenbank. Der
+Stand der Person liegt im Speicher ihres Browsers (`src/lib/speicher.ts`).
+
+| Befehl | wofür |
+|---|---|
+| `npm run dev` | Vorschau auf http://localhost:4400 |
+| `npm run check` | Typen und Svelte prüfen – **vor jedem Push fehlerfrei** |
+| `npm run build` | Bau nach `dist/` – **vor jedem Push fehlerfrei** |
+| `npm run artefakt -- <datei.html>` | eine Datei für die Browseransicht auf claude.ai, damit Max unterwegs schauen kann |
+
+Max' Vorschau: `vorschau-berufswahl.cmd` per Doppelklick. Max nie auf
+die Kommandozeile verweisen, wenn er nur die App sehen will.
+
+Die Auswertung (`src/lib/auswertung.ts`) sind reine Funktionen ohne
+Oberfläche. Alle Farben sind Tokens in `src/styles/tokens.css`, mit
+Dunkelmodus und belegten Kontrasten; Bauteile greifen nur über `var(--…)`
+darauf zu.
+
 ## Der feste Ort: `main`
 
 **Der aktuelle Stand liegt immer auf `main`.** Gearbeitet wird auf dem

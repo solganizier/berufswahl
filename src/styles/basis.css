@@ -1,0 +1,78 @@
+/* Grundlagen: was für jede Ansicht gilt. Werte nur über Tokens. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--grund);
+  color: var(--tinte);
+  font-family: var(--schrift);
+  font-size: var(--text-m);
+  line-height: 1.5;
+}
+
+h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
+
+button { font: inherit; color: inherit; cursor: pointer; }
+
+:focus-visible { outline: 3px solid var(--akzent); outline-offset: 2px; }
+[tabindex="-1"]:focus { outline: none; }
+
+/* Die eine Spalte, in der jede Ansicht steht */
+.seite {
+  max-width: var(--spalte);
+  margin-inline: auto;
+  padding-inline: max(1rem, 4vw);
+  padding-block: var(--raum-l) var(--raum-xl);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.kicker {
+  margin: 0 0 var(--raum-s);
+  font-size: var(--text-s);
+  color: var(--tinte-2);
+  letter-spacing: 0.02em;
+}
+
+/* Knöpfe: ein Hauptknopf je Ansicht, sonst Nebenknöpfe */
+.knopf {
+  min-height: 3rem;
+  padding: 0 var(--raum-m);
+  border-radius: var(--radius);
+  border: 1px solid var(--rahmen);
+  background: var(--flaeche);
+  text-align: center;
+}
+.knopf.haupt {
+  background: var(--akzent-flaeche);
+  border-color: var(--akzent-flaeche);
+  color: var(--auf-akzent);
+  font-weight: 600;
+}
+.knopf.neben:hover { background: var(--akzent-hell); }
+
+.textknopf {
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--akzent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.hinweis {
+  margin: 0;
+  padding: var(--raum-s) var(--raum-m);
+  border-radius: var(--radius);
+  background: var(--akzent-hell);
+  font-size: var(--text-s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
