@@ -1,0 +1,23 @@
+# Was nie ins Repository gehört
+
+# Abhängigkeiten und Bauergebnisse
+node_modules/
+dist/
+build/
+.vite/
+.astro/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Umgebungsvariablen – hier landen Zugangsdaten (etwa der KI-Schlüssel),
+# niemals committen
+.env
+.env.*
+!.env.example
+
+# Betriebssystem
+.DS_Store
+Thumbs.db
+desktop.ini

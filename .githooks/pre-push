@@ -1,0 +1,80 @@
+#!/bin/sh
+#
+# Schützt `main` davor, überschrieben oder gelöscht zu werden.
+#
+# WARUM HIER UND NICHT BEI GITHUB
+#
+# Ein Zweigschutz in den Repository-Einstellungen wird auf privaten
+# Repositories eines persönlichen Kontos nicht durchgesetzt (Rulesets
+# greifen dort erst ab einem Team-Konto). Ein force-push auf `main`
+# ginge also still durch – er meldet sich nicht, er tut es einfach.
+#
+# WIE ER WIRKT
+#
+# Git übergibt jedem pre-push-Hook über die Standardeingabe eine Zeile
+# je Ref: <lokaler Ref> <lokale ID> <ferner Ref> <ferne ID>. Für `main`
+# wird geprüft, ob die ferne ID ein Vorfahre der lokalen ist. Ist sie
+# das nicht, würde der Push fremde Commits abschneiden – das ist ein
+# force-push, und der wird abgelehnt.
+#
+# FAIL-CLOSED: Ist die ferne ID lokal unbekannt (weil niemand gefetcht
+# hat), lässt sich die Abstammung nicht prüfen. Dann wird abgelehnt.
+#
+# AKTIVIERUNG
+#
+# Hooks aus dem Repository greifen nur mit `core.hooksPath`. In
+# Web-Sitzungen setzt das `.claude/hooks/session-start.sh` automatisch.
+# Lokal einmalig:  git config core.hooksPath .githooks
+
+GESCHUETZT="refs/heads/main"
+NULL="0000000000000000000000000000000000000000"
+verweigert=0
+
+while read -r _lokaler_ref lokale_id ferner_ref ferne_id; do
+  [ "$ferner_ref" = "$GESCHUETZT" ] || continue
+
+  # Löschversuch: die lokale Seite ist leer.
+  if [ "$lokale_id" = "$NULL" ]; then
+    echo ""
+    echo "  ABGELEHNT: main soll gelöscht werden."
+    echo ""
+    echo "  main ist der feste Ort des Projekts (CLAUDE.md). Er wird"
+    echo "  nicht gelöscht."
+    echo ""
+    verweigert=1
+    continue
+  fi
+
+  # Der Zweig ist auf der Gegenseite neu – es gibt nichts zu überschreiben.
+  [ "$ferne_id" = "$NULL" ] && continue
+
+  # Der Normalfall: Ist der ferne Stand ein Vorfahre des eigenen?
+  if git merge-base --is-ancestor "$ferne_id" "$lokale_id" 2>/dev/null; then
+    continue
+  fi
+
+  kurz=$(echo "$ferne_id" | cut -c1-7)
+  echo ""
+  echo "  ABGELEHNT: Das wäre kein Fast-Forward auf main."
+  echo ""
+  echo "  Auf main liegt $kurz – und dieser Commit steckt nicht in dem,"
+  echo "  was hier gepusht werden soll. Der Push würde fremde Arbeit"
+  echo "  abschneiden, ohne sie zu melden."
+  echo ""
+  echo "  Der Weg stattdessen:"
+  echo ""
+  echo "    git fetch origin"
+  echo "    git log --oneline HEAD..origin/main     # was ist dazugekommen?"
+  echo "    git merge origin/main                   # hereinholen, nicht überfahren"
+  echo "    git push origin main"
+  echo ""
+  echo "  Meldet git dabei \"refusing to merge unrelated histories\","
+  echo "  wird nicht weitergemacht, sondern Max gefragt."
+  echo ""
+  echo "  Ist $kurz hier gar nicht bekannt, fehlt nur ein 'git fetch"
+  echo "  origin'. Dieser Hook lehnt im Zweifel ab, statt zu raten."
+  echo ""
+  verweigert=1
+done
+
+exit $verweigert
